@@ -1,0 +1,34 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vllm-uyu2"
+version = "0.1.0"
+description = "vLLM model plugin for Uyu-2 non-uniform structured-pruning checkpoints"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+readme = "README.md"
+authors = [{ name = "0204 ucx" }]
+keywords = ["vllm", "uyu-2", "structured-pruning", "roleplay"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "vllm>=0.23.0,<0.24",
+    "transformers>=5.13.0,<5.14",
+]
+
+[project.urls]
+Repository = "https://github.com/ucx0204/vllm-uyu2"
+Model = "https://huggingface.co/mente-ai/uyu-2-28b"
+
+[project.entry-points."vllm.general_plugins"]
+uyu2 = "uyu2_vllm_plugin:register"
+
+[tool.setuptools]
+packages = ["uyu2_vllm_plugin"]
