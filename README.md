@@ -50,14 +50,23 @@ Override `MODEL`, `MAX_MODEL_LEN`, `GPU_MEMORY_UTILIZATION`, `HOST`, `PORT`, or
 
 The model contains different retained attention shapes across layers. vLLM
 0.23 cannot allocate those heterogeneous KV pages directly, so the remote model
-code expands each layer to 32 Q/KV cache slots. This plugin creates matching
-vLLM attention instances and preserves vLLM's paged KV cache and continuous
-batching behavior.
+code restores the original indexed attention envelopes: 32 Q slots in every
+layer, 16 KV slots in sliding-window layers, and 4 KV slots in full-attention
+layers. Retained projections are scattered into their original slots while
+removed slots remain empty. This preserves the base GQA sharing ratios instead
+of duplicating K/V for every Q head.
 
-The padding affects only runtime attention and KV cache tensors. It does not
-restore pruned model weights or increase the checkpoint size. A future custom
-allocator/backend could store only retained KV heads, but that is outside this
-plugin's current scope.
+The Q padding is a transient attention tensor. KV cache pages use the 16/4 GQA
+envelopes, reducing the theoretical BF16 K+V payload at a 2,048-token context
+with a 1,024-token sliding window from approximately 2.813 GiB in plugin 0.1.0
+to 0.938 GiB. An ideal heterogeneous retained-KV allocator would use
+approximately 0.785 GiB. The padding does not restore pruned model weights or
+increase the checkpoint size.
+
+With `--max-model-len 2048` and `--gpu-memory-utilization 0.80` on the release
+validation system, vLLM reported 50,212 GPU KV cache tokens and 24.52x maximum
+concurrency, compared with 19,440 tokens and 9.49x for plugin 0.1.0. The exact
+capacity depends on available GPU memory and serving configuration.
 
 ## Verify installation
 

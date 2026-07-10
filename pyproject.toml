@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vllm-uyu2"
-version = "0.1.0"
+version = "0.1.1"
 description = "vLLM model plugin for Uyu-2 non-uniform structured-pruning checkpoints"
 requires-python = ">=3.10"
 license = "Apache-2.0"
