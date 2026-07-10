@@ -2,7 +2,7 @@
 
 `vllm-uyu2` registers the custom `Uyu2ForCausalLM` architecture with vLLM.
 It is the recommended serving integration for
-[`mente-ai/uyu-2-28b`](https://huggingface.co/mente-ai/uyu-2-28b), a text-only
+[`mente-ai/uyu-2-28B`](https://huggingface.co/mente-ai/uyu-2-28B), a text-only
 Korean and English role-playing model with non-uniform structured pruning.
 
 ## Compatibility
@@ -29,7 +29,7 @@ For development:
 pip install -e .
 ```
 
-## Serve uyu-2-28b
+## Serve uyu-2-28B
 
 ```bash
 VLLM_PLUGINS=uyu2 vllm serve mente-ai/uyu-2-28b \
