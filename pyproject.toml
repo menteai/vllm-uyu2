@@ -24,7 +24,7 @@ dependencies = [
 ]
 
 [project.urls]
-Repository = "https://github.com/ucx0204/vllm-uyu2"
+Repository = "https://github.com/menteai/vllm-uyu2"
 Model = "https://huggingface.co/mente-ai/uyu-2-28b"
 
 [project.entry-points."vllm.general_plugins"]

@@ -19,7 +19,7 @@ attention extension interfaces, which can change between releases.
 ## Install
 
 ```bash
-git clone https://github.com/ucx0204/vllm-uyu2.git
+git clone https://github.com/menteai/vllm-uyu2.git
 pip install ./vllm-uyu2
 ```
 
