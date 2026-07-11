@@ -1,7 +1,8 @@
 # vllm-uyu2
 
-`vllm-uyu2` registers the custom `Uyu2ForCausalLM` architecture with vLLM.
-It is the recommended serving integration for
+`vllm-uyu2` explicitly registers the custom `Uyu2ForCausalLM` architecture with
+vLLM. The model repository already bundles equivalent self-registering runtime
+code, so this package is optional for
 [`mente-ai/uyu-2-28B`](https://huggingface.co/mente-ai/uyu-2-28B), a text-only
 Korean and English role-playing model with non-uniform structured pruning.
 
@@ -17,6 +18,9 @@ Korean and English role-playing model with non-uniform structured pruning.
 
 The version bounds are intentional because this plugin uses vLLM's model and
 attention extension interfaces, which can change between releases.
+
+Uyu-2 currently requires `TP=1` and `PP=1` in both the bundled and standalone
+integration paths.
 
 ## Install
 
@@ -75,8 +79,8 @@ allocation is approximately 0.797 GiB.
 
 The release path was validated with vLLM main commit `04d553f` using CUDA 13
 nightly native extensions from commit `0923879`. With a 2,048-token model
-length and `--gpu-memory-utilization 0.80`, vLLM reported 61,081 GPU KV cache
-tokens and 29.83x maximum concurrency on the validation system. Capacity is
+length and `--gpu-memory-utilization 0.80`, vLLM reported 60,800 GPU KV cache
+tokens and 29.69x maximum concurrency on the validation system. Capacity is
 hardware- and configuration-dependent.
 
 ## Verify installation

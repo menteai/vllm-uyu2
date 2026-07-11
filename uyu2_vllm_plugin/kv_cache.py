@@ -168,6 +168,10 @@ def install_kv_cache_support() -> None:
 
     from vllm.v1.core import kv_cache_utils
 
+    if getattr(kv_cache_utils, "_uyu2_packed_support_installed", False):
+        _PATCHED = True
+        return
+
     original_get_groups = kv_cache_utils.get_kv_cache_groups
     original_get_config = kv_cache_utils.get_kv_cache_config_from_groups
     original_max_memory = kv_cache_utils._max_memory_usage_bytes_from_groups
@@ -214,4 +218,5 @@ def install_kv_cache_support() -> None:
     kv_cache_utils._max_memory_usage_bytes_from_groups = max_memory_usage
     kv_cache_utils.get_max_concurrency_for_kv_cache_config = max_concurrency
     kv_cache_utils._pool_bytes_per_block = pool_bytes
+    kv_cache_utils._uyu2_packed_support_installed = True
     _PATCHED = True
