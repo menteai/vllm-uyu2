@@ -10,7 +10,6 @@ exec vllm serve "$MODEL" \
   --dtype bfloat16 \
   --max-model-len "${MAX_MODEL_LEN:-2048}" \
   --gpu-memory-utilization "${GPU_MEMORY_UTILIZATION:-0.80}" \
-  --attention-backend "${ATTENTION_BACKEND:-TRITON_ATTN}" \
   --enforce-eager \
   --host "${HOST:-0.0.0.0}" \
   --port "${PORT:-8001}" \

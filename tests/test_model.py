@@ -5,6 +5,7 @@ from types import SimpleNamespace
 from unittest.mock import patch
 
 import torch
+from vllm.v1.attention.backends.triton_attn import TritonAttentionBackend
 from vllm.v1.kv_cache_interface import (
     FullAttentionSpec,
     SlidingWindowSpec,
@@ -24,7 +25,9 @@ class AttentionGeometryTest(unittest.TestCase):
     def test_uses_retained_sliding_kv_heads(self) -> None:
         model = object.__new__(Uyu2VllmForCausalLM)
         torch.nn.Module.__init__(model)
-        model.parallel_config = SimpleNamespace(tensor_parallel_size=1)
+        model.parallel_config = SimpleNamespace(
+            tensor_parallel_size=1, pipeline_parallel_size=1
+        )
         model.pp_group = SimpleNamespace(rank_in_group=0, world_size=1)
         model.text_config = SimpleNamespace(
             num_hidden_layers=2,
@@ -55,6 +58,9 @@ class AttentionGeometryTest(unittest.TestCase):
         self.assertEqual([call["num_heads"] for call in calls], [10, 32])
         self.assertEqual([call["num_kv_heads"] for call in calls], [5, 4])
         self.assertEqual([call["head_size"] for call in calls], [256, 512])
+        self.assertTrue(
+            all(call["attn_backend"] is TritonAttentionBackend for call in calls)
+        )
 
     def test_packs_real_uyu_geometry_with_minimal_padding(self) -> None:
         retained_sliding_heads = (

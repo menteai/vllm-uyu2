@@ -4,15 +4,19 @@ from vllm.distributed.utils import get_pp_indices
 from vllm.model_executor.layers.attention import Attention
 from vllm.model_executor.models.transformers import TransformersForCausalLM
 from vllm.v1.attention.backend import AttentionType
+from vllm.v1.attention.backends.triton_attn import TritonAttentionBackend
 
 
 class Uyu2VllmForCausalLM(TransformersForCausalLM):
     """Transformers wrapper using each layer's retained KV geometry."""
 
     def create_attention_instances(self) -> dict[int, Attention]:
-        if self.parallel_config.tensor_parallel_size != 1:
+        if (
+            self.parallel_config.tensor_parallel_size != 1
+            or self.parallel_config.pipeline_parallel_size != 1
+        ):
             raise ValueError(
-                "Uyu2VllmForCausalLM currently supports tensor parallel size 1"
+                "Uyu2VllmForCausalLM currently requires TP=1 and PP=1"
             )
 
         config = self.text_config
@@ -53,6 +57,7 @@ class Uyu2VllmForCausalLM(TransformersForCausalLM):
                 ),
                 prefix=f"{layer_idx}.attn",
                 attn_type=AttentionType.DECODER,
+                attn_backend=TritonAttentionBackend,
             )
 
         return attention_instances

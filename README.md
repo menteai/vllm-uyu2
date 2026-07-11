@@ -14,7 +14,7 @@ Korean and English role-playing model with non-uniform structured pruning.
 - Transformers 5.13.x
 - Tensor parallel size 1 and pipeline parallel size 1
 - BF16-capable CUDA GPU
-- `TRITON_ATTN` or another block-stride-aware attention backend
+- Triton attention support in the installed vLLM build
 
 The version bounds are intentional because this plugin uses vLLM's model and
 attention extension interfaces, which can change between releases.
@@ -47,7 +47,6 @@ VLLM_PLUGINS=uyu2 vllm serve mente-ai/uyu-2-28B \
   --dtype bfloat16 \
   --max-model-len 2048 \
   --gpu-memory-utilization 0.80 \
-  --attention-backend TRITON_ATTN \
   --enforce-eager \
   --served-model-name uyu-2-28b
 ```
@@ -55,6 +54,10 @@ VLLM_PLUGINS=uyu2 vllm serve mente-ai/uyu-2-28B \
 The equivalent reusable launcher is available at `scripts/serve_uyu2.sh`.
 Override `MODEL`, `MAX_MODEL_LEN`, `GPU_MEMORY_UTILIZATION`, `HOST`, `PORT`, or
 `SERVED_MODEL_NAME` through environment variables.
+
+Uyu-2 selects `TRITON_ATTN` for every attention layer internally. No attention
+backend CLI option is required. This avoids the unsupported mixed
+FlashAttention/FlashInfer path for this geometry.
 
 ## How it works
 
