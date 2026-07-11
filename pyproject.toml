@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "vllm-uyu2"
-version = "0.1.1"
+version = "0.2.0"
 description = "vLLM model plugin for Uyu-2 non-uniform structured-pruning checkpoints"
 requires-python = ">=3.10"
 license = "Apache-2.0"
@@ -25,7 +25,7 @@ dependencies = [
 
 [project.urls]
 Repository = "https://github.com/menteai/vllm-uyu2"
-Model = "https://huggingface.co/mente-ai/uyu-2-28b"
+Model = "https://huggingface.co/mente-ai/uyu-2-28B"
 
 [project.entry-points."vllm.general_plugins"]
 uyu2 = "uyu2_vllm_plugin:register"

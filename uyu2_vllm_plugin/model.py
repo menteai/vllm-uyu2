@@ -7,7 +7,7 @@ from vllm.v1.attention.backend import AttentionType
 
 
 class Uyu2VllmForCausalLM(TransformersForCausalLM):
-    """Transformers wrapper preserving the base model's GQA cache geometry."""
+    """Transformers wrapper using each layer's retained KV geometry."""
 
     def create_attention_instances(self) -> dict[int, Attention]:
         if self.parallel_config.tensor_parallel_size != 1:
@@ -28,10 +28,20 @@ class Uyu2VllmForCausalLM(TransformersForCausalLM):
                 if is_sliding
                 else (config.global_head_dim or config.head_dim)
             )
-            num_kv_heads = 16 if is_sliding else 4
+            layer_info = config.pruned_shapes["layers"][str(layer_idx)]
+            num_heads = (
+                int(layer_info["num_attention_heads"])
+                if is_sliding
+                else 32
+            )
+            num_kv_heads = (
+                int(layer_info["num_key_value_heads"])
+                if is_sliding
+                else 4
+            )
 
             attention_instances[layer_idx] = Attention(
-                num_heads=32,
+                num_heads=num_heads,
                 head_size=head_size,
                 scale=1.0,
                 num_kv_heads=num_kv_heads,
