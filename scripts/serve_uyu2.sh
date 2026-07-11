@@ -12,7 +12,6 @@ exec vllm serve "$MODEL" \
   --gpu-memory-utilization "${GPU_MEMORY_UTILIZATION:-0.80}" \
   --attention-backend "${ATTENTION_BACKEND:-TRITON_ATTN}" \
   --enforce-eager \
-  --no-enable-prefix-caching \
   --host "${HOST:-0.0.0.0}" \
   --port "${PORT:-8001}" \
   --served-model-name "${SERVED_MODEL_NAME:-uyu-2-28b}"
